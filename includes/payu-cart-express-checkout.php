@@ -175,13 +175,13 @@ class PayuCartExpressCheckout
             'first_name' => $first_name ? $first_name : 'test',
             'last_name' => $last_name,
             'address_1' => $address_1 ? $address_1 : 'address',
-            'company' => $company,
+            'company' => $company ? $company : 'null' ,
             'email' => $email ? $email : 'test@gmail.com',
             'phone' => $billing_phone ? $billing_phone : '1234567890',
-            'city' => $city ? $city : '',
+            'city' => $city ? $city : 'Noida',
             'country' => $country ? $country : 'IN',
-            'state' => $state ? $state : '',
-            'postcode' => $postcode ? $postcode : '',
+            'state' => $state ? $state : 'UP',
+            'postcode' => $postcode ? $postcode : '201301',
             'logged_in' => $customer_id ? true : false
         );
         $addresses['billing'] = $billing_data;
