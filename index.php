@@ -135,6 +135,20 @@ function woocommercePayubizInit()
 }
 
 /*=========================================================================================
+------------------- Payu Support Block Based Cart -------------------------------
+========================================================================================= */
+function enqueue_custom_block_cart_script() {
+    wp_enqueue_script(
+        'custom-block-cart-script', // Handle for the script
+        plugin_dir_url(__FILE__) . 'assets/js/custom-block-cart.js',
+        array('jquery'), // Dependencies
+        null, // Version (optional, can be set for cache busting)
+        true // Load in footer
+    );
+}
+add_action('wp_enqueue_scripts', 'enqueue_custom_block_cart_script');
+
+/*=========================================================================================
 ------------------- Payu Support Block Based Checkout -------------------------------
 ========================================================================================= */
 
