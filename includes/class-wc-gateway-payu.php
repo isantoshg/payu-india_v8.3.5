@@ -294,8 +294,11 @@ class WcPayubiz extends WC_Payment_Gateway
 		$order->calculate_totals();
 		//do we have a phone number?
 		//get currency
-		$address = sanitize_text_field($order->billing_address_1); {
-		$address = $address . ' ' . sanitize_text_field($order->billing_address_2);
+		// $address = sanitize_text_field($order->billing_address_1); {
+		// $address = $address . ' ' . sanitize_text_field($order->billing_address_2);
+		// }
+		$address = sanitize_text_field($order->get_billing_address_1()); {
+		$address = $address . ' ' . sanitize_text_field($order->get_billing_address_2());
 		}
 
 		$sku_details = $this->payuGetOrderSkuDetails($order);

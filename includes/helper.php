@@ -33,10 +33,10 @@ function payu_insert_event_logs($args_log)
 		'request_type' => $args_log['request_type'],
 		'request_method' => $args_log['method'],
 		'request_url' => $args_log['url'],
-		'request_headers' => isset($args_log['request_header']) ? serialize($args_log['request_header']) : null,
+		'request_headers' => isset($args_log['request_header']) ? serialize($args_log['request_header']) : '{}',
 		'request_data' => serialize($args_log['request_data']),
 		'response_status' => $args_log['status'],
-		'response_headers' => isset($args_log['response_header']) ? serialize($args_log['response_header']) : null,
+		'response_headers' => isset($args_log['response_header']) ? serialize($args_log['response_header']) : '{}',
 		'response_data' => serialize($args_log['response_data'])
 	);
 	if (!$wpdb->insert($wp_payu_table, $table_data)) {
