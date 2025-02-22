@@ -549,10 +549,10 @@ class WcPayubiz extends WC_Payment_Gateway
 		// 	}
 		// 	return array('sku_details_array' => $sku_details_array, 'product_info' => $productInfo);
 		// }
-          private function payuGetOrderSkuDetails($order)
-	   {
+        private function payuGetOrderSkuDetails($order)
+	{
 		$productInfo = '';
-		$logo = 'https://devguide.payu.in/website-assets/uploads/2021/12/new-payu-logo.svg'; 
+		$default_Payu_logo = 'https://devguide.payu.in/website-assets/uploads/2021/12/new-payu-logo.svg'; 
 		$sku_details_array = [];
 	
 		foreach ($order->get_items() as $item) {
@@ -567,6 +567,10 @@ class WcPayubiz extends WC_Payment_Gateway
 				$_product = $product;
 			}
 	
+			// echo "<pre>";
+			// print_r($_product);
+			// echo "</pre>";
+			// exit;
 			// SKU details
 			$single_sku_price = (float) $_product->get_price();
 			$single_sku_name = $_product->get_name();
@@ -582,7 +586,9 @@ class WcPayubiz extends WC_Payment_Gateway
 	
 			// Cart ka final price (Product price + Add-ons ka price)
 			$amount_per_sku = number_format($cart_product_price, 2, '.', '');
-	
+
+			$product_image = wp_get_attachment_url($_product->get_image_id());
+			$logo = $product_image ? $product_image : $default_Payu_logo;
 			// Product info update
 			$productInfo .= $product->get_sku() . ':';
 	
