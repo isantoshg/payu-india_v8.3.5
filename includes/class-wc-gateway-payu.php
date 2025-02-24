@@ -499,68 +499,56 @@ class WcPayubiz extends WC_Payment_Gateway
 		return $html;
 	}
 
-		private function payuGetOrderSkuDetails($order)
-		{
-			$productInfo = '';
-			$default_Payu_logo = 'https://devguide.payu.in/website-assets/uploads/2021/12/new-payu-logo.svg'; 
-			$sku_details_array = [];
-		
-			foreach ($order->get_items() as $item) {
-		
-				$variation_id = $item->get_variation_id();
-				$product = wc_get_product($item->get_product_id());
-		
-				// Variation check
-				if ($variation_id) {
-					$_product = new WC_Product_Variation($variation_id);
-				} else {
-					$_product = $product;
-				}
-		
-				// echo "<pre>";
-				// print_r($_product);
-				// echo "</pre>";
-				// exit;
-				// SKU details
-				$single_sku_price = (float) $_product->get_price();
-				$single_sku_name = $_product->get_name();
-				$single_sku = $_product->get_sku();
-				$single_sku = ($single_sku != "") ? $single_sku : $variation_id;
-		
-				// Cart product price including extra add-ons
-				$cart_product_price = (float) $item->get_total(); 
-		
-				// SKU details
-				$sku_id = ($_product->get_sku() != "") ? $_product->get_sku() : $_product->get_id();
-				$product_name = $_product->get_name();
-		
-				// Cart ka final price (Product price + Add-ons ka price)
-				$amount_per_sku = number_format($cart_product_price, 2, '.', '');
+	private function payuGetOrderSkuDetails($order)
+	{
 
-				$product_image = wp_get_attachment_url($_product->get_image_id());
-				$logo = $product_image ? $product_image : $default_Payu_logo;
-				// Product info update
-				$productInfo .= $product->get_sku() . ':';
-		
-				$sku_details_array[] = array(
-					'offer_key' => array(),
-					'amount_per_sku' => $amount_per_sku,
-					'quantity' => (string) $item->get_quantity(),
-					'sku_id' => $sku_id,
-					'sku_name' => $product_name,
-					'logo' => $logo
-				);
-			}
-		
-			$productInfo = rtrim($productInfo, ':');
-			if ($productInfo == '') {
-				$productInfo = "Product Information";
-			} elseif (strlen($productInfo) > 100) {
-				$productInfo = substr($productInfo, 0, 100);
-			}
-		
-			return array('sku_details_array' => $sku_details_array, 'product_info' => $productInfo);
+		$productInfo = '';
+		//$logo = 'https://payu.in/demo/checkoutExpress/utils/images/MicrosoftTeams-image%20(31).png'; 
+		$logo = 'https://devguide.payu.in/website-assets/uploads/2021/12/new-payu-logo.svg'; 
+		// $logo = plugins_url('images/payuimg.svg', __FILE__);
+		// // $logo = 'https://plugin.clouddeploy.in/payu/pay-new/wp-content/plugins/payu-india/images/payuimg.svg';
+        
+		foreach ($order->get_items() as $item) {
+            $variation_id = $item->get_variation_id();
+            $_product = new WC_Product_Variation($variation_id);
+            $single_sku_price=$_product->get_price();
+            $single_sku_name=$_product->get_name();
+            $single_sku=$_product->get_sku();
+            $single_sku=($single_sku!="") ? $single_sku : $variation_id;
+            $single_sku_price=str_replace(",", "", $single_sku_price);
+			$product = wc_get_product($item->get_product_id());
+			$productInfo .= $product->get_sku() . ':';
+            $amount_per_sku=(string)number_format($product->get_price(), 2);
+            $amount_per_sku=str_replace(",", "", $amount_per_sku);
+            if($variation_id==0){
+                $sku_id=($product->get_sku()!="") ? $product->get_sku():$product->get_id();
+                $amount_per_sku=$amount_per_sku;
+                $product_name=$product->get_name();
+            }
+            else{
+             $sku_id=$single_sku;
+             $amount_per_sku=$single_sku_price;
+             $product_name=$single_sku_name;                 
+            }
+            $sku_details_array[] = array(
+				'offer_key' => array(),
+				'amount_per_sku' => $amount_per_sku,
+				'quantity' => (string)$item->get_quantity(),
+				'sku_id' => $sku_id,
+				'sku_name' => $product_name, 
+				'logo' => $logo
+			);            
 		}
+
+
+		$productInfo = rtrim($productInfo, ':');
+		if ('' == $productInfo) {
+			$productInfo = "Product Information";
+		} elseif (100 < strlen($productInfo)) {
+			$productInfo = substr($productInfo, 0, 100);
+		}
+		return array('sku_details_array' => $sku_details_array, 'product_info' => $productInfo);
+	}
 
 	private function payuRedirectMethod($args_redirect)
 	{
