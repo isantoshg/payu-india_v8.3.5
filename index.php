@@ -135,18 +135,37 @@ function woocommercePayubizInit()
 }
 
 /*=========================================================================================
-------------------- Payu Support Block Based Cart -------------------------------
+------------------- Payu Support Block Based Cart ------------------------------- 
+         ------ Only working in a Commerce pro mode ----------------------
 ========================================================================================= */
+function is_commercepro_enabled() {
+    $payu_settings = get_option('woocommerce_payubiz_settings');
+    $selected_mode = isset($payu_settings['checkout_express']) ? $payu_settings['checkout_express'] : 'redirect';
+ 
+    // echo "</pre>";
+    // print_r($payu_settings);
+    // echo "</pre>";
+     //echo $selected_mode;
+    // exit;
+    return ($selected_mode == 'checkout_express');
+}
+/* ==================================================================================
+         -------------- Enqueu Js Script ----------------------
+================================================================================== */
+
 function enqueue_custom_block_cart_script() {
-    wp_enqueue_script(
-        'custom-block-cart-script', // Handle for the script
-        plugin_dir_url(__FILE__) . 'assets/js/custom-block-cart.js',
-        array('jquery'), // Dependencies
-        null, // Version (optional, can be set for cache busting)
-        true // Load in footer
-    );
+    if (is_commercepro_enabled()) {
+        wp_enqueue_script(
+            'custom-block-cart-script',
+            plugin_dir_url(__FILE__) . 'assets/js/custom-block-cart.js',
+            array('jquery'),
+            null,
+            true
+        );
+    }
 }
 add_action('wp_enqueue_scripts', 'enqueue_custom_block_cart_script');
+
 
 /*=========================================================================================
 ------------------- Payu Support Block Based Checkout -------------------------------
