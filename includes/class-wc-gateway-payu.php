@@ -516,7 +516,8 @@ class WcPayubiz extends WC_Payment_Gateway
             $single_sku_price=str_replace(",", "", $single_sku_price);
 			$product = wc_get_product($item->get_product_id());
 			$productInfo .= $product->get_sku() . ':';
-            $amount_per_sku= (float) number_format($product->get_price(), 2);
+           // $amount_per_sku= (float) number_format($product->get_price(), 2);
+	    $amount_per_sku= (float)$product->get_price();
             $amount_per_sku=str_replace(",", "", $amount_per_sku);
 
 			$product_image = wp_get_attachment_url($_product->get_image_id());
